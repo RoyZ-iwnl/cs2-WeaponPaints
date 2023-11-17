@@ -3,13 +3,13 @@ ob_start();
 session_start();
 
 function logoutbutton() {
-	echo "<form action='' method='get'><button class='btn btn-secondary' name='logout' type='submit'>Logout</button></form>"; //logout button
+	echo "<form action='' method='get'><button class='btn btn-secondary' name='logout' type='submit'>登出</button></form>"; //logout button
 }
 
 function loginbutton($buttonstyle = "square") {
 	$button['rectangle'] = "01";
 	$button['square'] = "02";
-	$button = "<a href='?login'><img src='https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_".$button[$buttonstyle].".png'></a>";
+	$button = "<a href='?login'><img src='sits_01.png'></a>";
 	
 	echo $button;
 }

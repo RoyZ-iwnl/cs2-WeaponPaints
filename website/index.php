@@ -55,11 +55,11 @@ if (isset($_SESSION['steamid'])) {
 
 	<?php
 	if (!isset($_SESSION['steamid'])) {
-		echo "<div class='bg-primary'><h2>To choose weapon paints loadout, you need to ";
+		echo "<div class='bg-primary'><h2>您需要先登录";
 		loginbutton("rectangle");
 		echo "</h2></div>";
 	} else {
-		echo "<div class='bg-primary'>Your current weapon skin loadout<form action='' method='get'><button class='btn btn-secondary' name='logout' type='submit'>Logout</button></form></div>";
+		echo "<div class='bg-primary'>您当前的皮肤配置如下<form action='' method='get'><button class='btn btn-secondary' name='logout' type='submit'>登出</button></form></div>";
 		echo "<div class='card-group mt-2'>";
 		?>
 
@@ -76,7 +76,7 @@ if (isset($_SESSION['steamid'])) {
 					}
 
 					echo "<div class='card-header'>";
-					echo "<h6 class='card-title item-name'>Knife type</h6>";
+					echo "<h6 class='card-title item-name'>刀具类型</h6>";
 					echo "<h5 class='card-title item-name'>{$actualKnife["paint_name"]}</h5>";
 					echo "</div>";
 					echo "<img src='{$actualKnife["image_url"]}' class='skin-image'>";
@@ -122,7 +122,7 @@ if (isset($_SESSION['steamid'])) {
 					<div class="card-footer">
 						<form action="" method="POST">
 							<select name="forma" class="form-control select" onchange="this.form.submit()" class="SelectWeapon">
-								<option>Select skin</option>
+								<option>选择皮肤</option>
 								<?php
 								foreach ($skins[$defindex] as $paintKey => $paint) {
 									if (array_key_exists($defindex, $selectedSkins) && $selectedSkins[$defindex] == $paintKey)
