@@ -75,7 +75,7 @@ class UtilsClass
             $knifes[0] = [
                 'weapon_name' => "weapon_knife",
                 'paint_name' => "Default knife",
-                'image_url' => "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife.png",
+                'image_url' => "img/skins/weapon_knife.png",
             ];
         }
 
