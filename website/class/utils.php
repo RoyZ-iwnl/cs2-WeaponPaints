@@ -74,7 +74,7 @@ class UtilsClass
             ];
             $knifes[0] = [
                 'weapon_name' => "weapon_knife",
-                'paint_name' => "Default knife",
+                'paint_name' => "默认刀具",
                 'image_url' => "img/skins/weapon_knife.png",
             ];
         }

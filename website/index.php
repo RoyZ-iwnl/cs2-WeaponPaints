@@ -86,7 +86,7 @@ if (isset($_SESSION['steamid'])) {
 				<div class="card-footer">
 					<form action="" method="POST">
 						<select name="forma" class="form-control select" onchange="this.form.submit()" class="SelectWeapon">
-							<option>Select knife</option>
+							<option>请选择您的刀具</option>
 							<?php
 							foreach ($knifes as $knifeKey => $knife) {
 								if ($selectedKnife['knife'] == $knife['weapon_name'])
