@@ -7,9 +7,7 @@ require_once 'class/utils.php';
 
 $db = new DataBase();
 if (isset($_SESSION['steamid'])) {
-
-	include('steamauth/userInfo.php');
-	$steamid = $steamprofile['steamid'];
+	$steamid = $_SESSION['steamid'];
 
 	$weapons = UtilsClass::getWeaponsFromArray();
 	$skins = UtilsClass::skinsFromJson();
@@ -24,6 +22,8 @@ if (isset($_SESSION['steamid'])) {
 		if ($ex[0] == "knife") {
 			$db->query("INSERT INTO `wp_player_knife` (`steamid`, `knife`) VALUES(:steamid, :knife) ON DUPLICATE KEY UPDATE `knife` = :knife", ["steamid" => $steamid, "knife" => $knifes[$ex[1]]['weapon_name']]);
 		} else {
+			if (!is_int($ex[1]))
+				header("Location: index.php");
 			if (array_key_exists($ex[1], $skins[$ex[0]])) {
 				if (array_key_exists($ex[0], $selectedSkins)) {
 					$db->query("UPDATE wp_player_skins SET weapon_paint_id = :weapon_paint_id WHERE steamid = :steamid AND weapon_defindex = :weapon_defindex", ["steamid" => $steamid, "weapon_defindex" => $ex[0], "weapon_paint_id" => $ex[1]]);
@@ -86,7 +86,7 @@ if (isset($_SESSION['steamid'])) {
 				<div class="card-footer">
 					<form action="" method="POST">
 						<select name="forma" class="form-control select" onchange="this.form.submit()" class="SelectWeapon">
-							<option>请选择您的刀具</option>
+							<option disabled>请选择您的刀具</option>
 							<?php
 							foreach ($knifes as $knifeKey => $knife) {
 								if ($selectedKnife['knife'] == $knife['weapon_name'])
@@ -123,7 +123,7 @@ if (isset($_SESSION['steamid'])) {
 					<div class="card-footer">
 						<form action="" method="POST">
 							<select name="forma" class="form-control select" onchange="this.form.submit()" class="SelectWeapon">
-								<option>选择皮肤</option>
+								<option disabled>选择皮肤</option>
 								<?php
 								foreach ($skins[$defindex] as $paintKey => $paint) {
 									if (array_key_exists($defindex, $selectedSkins) && $selectedSkins[$defindex] == $paintKey)
