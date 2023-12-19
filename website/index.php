@@ -150,7 +150,7 @@ if (isset($_SESSION['steamid'])) {
 								</button>
 								<script>
 									function showSkinSelectionAlert() {
-										alert("You need to select a skin first.");
+										alert("您需要先选择一个皮肤。");
 									}
 								</script>
 							<?php endif; ?>
