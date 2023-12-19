@@ -176,9 +176,9 @@ if (isset($_SESSION['steamid'])) {
 									<h5 class='card-title item-name'>
 										<?php
 										if (array_key_exists($defindex, $selectedSkins)) {
-											echo "{$skins[$defindex][$selectedSkins[$defindex]['weapon_paint_id']]["paint_name"]} Settings";
+											echo "{$skins[$defindex][$selectedSkins[$defindex]['weapon_paint_id']]["paint_name"]} 参数设置";
 										} else {
-											echo "{$default["paint_name"]} Settings";
+											echo "{$default["paint_name"]} 参数设置";
 										}
 										?>
 									</h5>
