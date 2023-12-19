@@ -5,6 +5,7 @@ using MySqlConnector;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
 
 namespace WeaponPaints
 {
@@ -105,6 +106,46 @@ namespace WeaponPaints
 			}
 
 			return message;
+		}
+
+		internal static async Task CheckVersion(string version, ILogger logger)
+		{
+			using (HttpClient client = new HttpClient())
+			{
+				try
+				{
+					HttpResponseMessage response = await client.GetAsync("https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/VERSION");
+
+					if (response.IsSuccessStatusCode)
+					{
+						string remoteVersion = await response.Content.ReadAsStringAsync();
+						remoteVersion = remoteVersion.Trim();
+
+						int comparisonResult = string.Compare(version, remoteVersion);
+
+						if (comparisonResult < 0)
+						{
+							logger.LogWarning("Plugin is outdated! Check https://github.com/Nereziel/cs2-WeaponPaints");
+						}
+						else if (comparisonResult > 0)
+						{
+							logger.LogInformation("Probably dev version detected");
+						}
+						else
+						{
+							logger.LogInformation("Plugin is up to date");
+						}
+					}
+					else
+					{
+						logger.LogWarning("Failed to check version");
+					}
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine(ex);
+				}
+			}
 		}
 
 		internal static void ShowAd(string moduleVersion)

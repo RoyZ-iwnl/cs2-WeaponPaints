@@ -3,10 +3,12 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes;
 using CounterStrikeSharp.API.Modules.Cvars;
 using Newtonsoft.Json.Linq;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Localization;
 
 namespace WeaponPaints;
 
-[MinimumApiVersion(101)]
+[MinimumApiVersion(121)]
 public partial class WeaponPaints : BasePlugin, IPluginConfig<WeaponPaintsConfig>
 {
 	internal static readonly Dictionary<string, string> weaponList = new()
@@ -68,6 +70,7 @@ public partial class WeaponPaints : BasePlugin, IPluginConfig<WeaponPaintsConfig
 	};
 
 	internal static WeaponPaintsConfig _config = new WeaponPaintsConfig();
+	internal static IStringLocalizer? _localizer;
 	internal static Dictionary<int, int> g_knifePickupCount = new Dictionary<int, int>();
 	internal static Dictionary<int, string> g_playersKnife = new();
 	internal static Dictionary<int, Dictionary<int, WeaponInfo>> gPlayerWeaponsInfo = new Dictionary<int, Dictionary<int, WeaponInfo>>();
@@ -76,7 +79,7 @@ public partial class WeaponPaints : BasePlugin, IPluginConfig<WeaponPaintsConfig
 	//internal static List<int> g_changedKnife = new();
 	internal bool g_bCommandsAllowed = true;
 
-	internal Uri GlobalShareApi = new Uri("https://weaponpaints.fun/api.php");
+	internal Uri GlobalShareApi = new("https://weaponpaints.fun/api.php");
 	internal int GlobalShareServerId = 0;
 	private DateTime[] commandCooldown = new DateTime[Server.MaxPlayers];
 	private string DatabaseConnectionString = string.Empty;
@@ -142,7 +145,8 @@ public partial class WeaponPaints : BasePlugin, IPluginConfig<WeaponPaintsConfig
 	public override string ModuleAuthor => "Nereziel & daffyy";
 	public override string ModuleDescription => "Skin and knife selector, standalone and web-based";
 	public override string ModuleName => "WeaponPaints";
-	public override string ModuleVersion => "1.3c";
+	public override string ModuleVersion => "1.3g";
+
 	public static WeaponPaintsConfig GetWeaponPaintsConfig()
 	{
 		return _config;
@@ -180,10 +184,13 @@ public partial class WeaponPaints : BasePlugin, IPluginConfig<WeaponPaintsConfig
 					_ = weaponSync.GetWeaponPaintsFromDatabase(playerInfo);
 				if (Config.Additional.KnifeEnabled && weaponSync != null)
 					_ = weaponSync.GetKnifeFromDatabase(playerInfo);
-			}
 
+				g_knifePickupCount[(int)player!.Index] = 0;
+			}
+			/*
 			RegisterListeners();
 			RegisterCommands();
+			*/
 		}
 
 		if (Config.Additional.KnifeEnabled)
@@ -203,14 +210,18 @@ public partial class WeaponPaints : BasePlugin, IPluginConfig<WeaponPaintsConfig
 		{
 			if (config.DatabaseHost.Length < 1 || config.DatabaseName.Length < 1 || config.DatabaseUser.Length < 1)
 			{
+				Logger.LogError("You need to setup Database credentials in config!");
 				throw new Exception("[WeaponPaints] You need to setup Database credentials in config!");
 			}
 		}
 
 		Config = config;
 		_config = config;
+		_localizer = Localizer;
+
 		Utility.Config = config;
 		Utility.ShowAd(ModuleVersion);
+		Task.Run(async () => await Utility.CheckVersion(ModuleVersion, Logger));
 	}
 
 	public override void Unload(bool hotReload)
@@ -246,10 +257,12 @@ public partial class WeaponPaints : BasePlugin, IPluginConfig<WeaponPaintsConfig
 			}
 			else
 			{
+				Logger.LogError("Unable to retrieve serverid from GlobalShare!");
 				throw new Exception("[WeaponPaints] Unable to retrieve serverid from GlobalShare!");
 			}
 		}
 
+		Logger.LogInformation("GlobalShare ONLINE!");
 		Console.WriteLine("[WeaponPaints] GlobalShare ONLINE");
 	}
 }
