@@ -142,11 +142,11 @@ if (isset($_SESSION['steamid'])) {
 							if ($selectedSkinInfo) :
 							?>
 								<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#weaponModal<?php echo $defindex ?>">
-									Settings
+									参数配置
 								</button>
 							<?php else : ?>
 								<button type="button" class="btn btn-primary" onclick="showSkinSelectionAlert()">
-									Settings
+									参数配置
 								</button>
 								<script>
 									function showSkinSelectionAlert() {
@@ -252,7 +252,8 @@ if (isset($_SESSION['steamid'])) {
 	<div class="container">
 		<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
 			<div class="col-md-4 d-flex align-items-center">
-				<span class="mb-3 mb-md-0 text-body-secondary">本项目基于<a href="https://github.com/Nereziel/cs2-WeaponPaints">Nereziel/cs2-WeaponPaints</a></span>
+				<span class="mb-3 mb-md-0 text-body-secondary">本项目基于<a href="https://github.com/Nereziel/cs2-WeaponPaints">Nereziel/cs2-WeaponPaints</a><br>由<a href="https://github.com/RoyZ-iwnl/cs2-WeaponPaints">RoyZ</a>进行本地化及皮肤数据库翻译</span>
+				<span class="mb-3 mb-md-0 text-body-secondary">© DMR.gg 2023</a></span>
 			</div>
 		</footer>
 	</div>
