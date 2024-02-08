@@ -23,7 +23,8 @@ Unfinished, unoptimized and not fully functional ugly demo weapon paints plugin 
 ## CS2 Server
 - Have working CounterStrikeSharp (**with RUNTIME!**)
 - Download from Release and copy plugin to plugins
-- Setup `addons/counterstrikesharp/configs/`**`plugins/WeaponPaints/WeaponPaints.json`** set **`GlobalShare`** to **`true`** for global, or include database credentials
+- Run server with plugin, **it will generate config if installed correctly!**
+- Edit `addons/counterstrikesharp/configs/`**`plugins/WeaponPaints/WeaponPaints.json`** set **`GlobalShare`** to **`true`** for global, or include database credentials
 - In `addons/counterstrikesharp/configs/`**`core.json`** set **FollowCS2ServerGuidelines** to **`false`**
 
 ## Plugin Configuration
@@ -88,6 +89,7 @@ Disregard if the config is **`GlobalShare = true`**
 
 ## Known issues
 - Issue on Windows servers, no knives are given.
+- You can't change knife if it's equpied in cs2 inventory
 - Can cause incompatibility with plugins/maps which manipulates weapons and knives
 
 ## Troubleshooting
@@ -100,6 +102,9 @@ Plugin is not loaded or configured with mysql credentials. Tables are auto-creat
 
 **Knives are disappearing:**
 Set in config GiveKnifeAfterRemove to true 
+
+**Knives are not changing for players:**
+You can't change knife if you have your own equipped
 </details>
 
 ### Use this plugin at your own risk! Using this may lead to GSLT ban or something else Valve come with. [Valve Server guidelines](https://blog.counter-strike.net/index.php/server_guidelines/)

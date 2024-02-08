@@ -9,27 +9,28 @@ namespace WeaponPaints
 		{
 			CCSPlayerController? player = Utilities.GetPlayerFromSlot(playerSlot);
 
+			if (player == null || !player.IsValid || player.IsBot || player.IsHLTV || weaponSync == null || player.Connected == PlayerConnectedState.PlayerDisconnecting) return;
+
 			PlayerInfo playerInfo = new PlayerInfo
 			{
 				UserId = player.UserId,
 				Index = (int)player.Index,
 				SteamId = player.SteamID.ToString(),
-				Name = player?.PlayerName,
-				IpAddress = player?.IpAddress?.Split(":")[0]
+				Name = player.PlayerName,
+				IpAddress = player.IpAddress?.Split(":")[0]
 			};
 
-			if (player == null || !player.IsValid || player.IsBot || player.IsHLTV || weaponSync == null) return;
-
-			Task.Run(async () =>
+			if (!gPlayerWeaponsInfo.ContainsKey((int)player.Index))
 			{
-				if (Config.Additional.SkinEnabled)
-					await weaponSync.GetKnifeFromDatabase(playerInfo);
-			});
-
-			//if (Config.Additional.KnifeEnabled && weaponSync != null)
-			//_ = weaponSync.GetKnifeFromDatabase(playerIndex);
+				Task.Run(async () =>
+				{
+					if (Config.Additional.SkinEnabled)
+						await weaponSync.GetWeaponPaintsFromDatabase(playerInfo);
+					if (Config.Additional.KnifeEnabled)
+						await weaponSync.GetKnifeFromDatabase(playerInfo);
+				});
+			}
 		}
-
 		private void OnClientDisconnect(int playerSlot)
 		{
 			CCSPlayerController player = Utilities.GetPlayerFromSlot(playerSlot);
@@ -175,6 +176,7 @@ namespace WeaponPaints
 				weaponSync = new WeaponSynchronization(DatabaseConnectionString, Config, GlobalShareApi, GlobalShareServerId);
 			});
 
+			/*
 			g_hTimerCheckSkinsData = AddTimer(10.0f, () =>
 			{
 				List<CCSPlayerController> players = Utilities.GetPlayers();
@@ -199,6 +201,7 @@ namespace WeaponPaints
 						_ = weaponSync.GetKnifeFromDatabase(playerInfo);
 				}
 			}, CounterStrikeSharp.API.Modules.Timers.TimerFlags.STOP_ON_MAPCHANGE | CounterStrikeSharp.API.Modules.Timers.TimerFlags.REPEAT);
+			*/
 		}
 
 		private HookResult OnPlayerConnectFull(EventPlayerConnectFull @event, GameEventInfo info)
@@ -279,7 +282,7 @@ namespace WeaponPaints
 			{
 				try
 				{
-					if (player == null || !player.IsValid || !player.PawnIsAlive || player.IsBot || player.IsHLTV) continue;
+					if (player == null || !player.IsValid || !player.PawnIsAlive || player.IsBot || player.IsHLTV || player.Connected == PlayerConnectedState.PlayerDisconnecting) continue;
 
 					var viewModels = GetPlayerViewModels(player);
 
@@ -301,7 +304,20 @@ namespace WeaponPaints
 						)
 						{
 							var skeleton = GetSkeletonInstance(viewModel.Value.CBodyComponent.SceneNode);
-							skeleton.ModelState.MeshGroupMask = 2;
+							int[] array = { 1171, 1170, 1169, 1164, 1162, 1161, 1159, 1175, 1174, 1167, 1165, 1168, 1163, 1160, 1166, 1173 };
+							int fallbackPaintKit = weapon.FallbackPaintKit;
+							if (array.Contains(fallbackPaintKit))
+							{
+								skeleton.ModelState.MeshGroupMask = 1;
+							}
+							else
+							{
+								if (skeleton.ModelState.MeshGroupMask != 2)
+								{
+									skeleton.ModelState.MeshGroupMask = 2;
+								}
+							}
+
 						}
 
 						Utilities.SetStateChanged(viewModel.Value, "CBaseEntity", "m_CBodyComponent");
@@ -320,11 +336,11 @@ namespace WeaponPaints
 			RegisterListener<Listeners.OnMapStart>(OnMapStart);
 			RegisterListener<Listeners.OnTick>(OnTick);
 
-			RegisterEventHandler<EventPlayerConnectFull>(OnPlayerConnectFull);
+			//RegisterEventHandler<EventPlayerConnectFull>(OnPlayerConnectFull);
 			RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawn);
 			RegisterEventHandler<EventRoundStart>(OnRoundStart, HookMode.Pre);
 			RegisterEventHandler<EventRoundEnd>(OnRoundEnd);
-			RegisterEventHandler<EventItemPurchase>(OnEventItemPurchasePost);
+			//RegisterEventHandler<EventItemPurchase>(OnEventItemPurchasePost);
 			//RegisterEventHandler<EventItemPickup>(OnItemPickup);
 			HookEntityOutput("weapon_knife", "OnPlayerPickup", OnPickup, HookMode.Pre);
 		}
